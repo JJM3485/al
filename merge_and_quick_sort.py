@@ -41,6 +41,7 @@ def main():
     #   TRIAL   #
     #############
 
+    # 반복 실행을 하여서 평균값을 구해기 위해 존재하는 TRIAL 값
     TRIAL = 100
     total_elapsed_time_merge_sort = 0
     total_elapsed_time_quick_sort = 0
