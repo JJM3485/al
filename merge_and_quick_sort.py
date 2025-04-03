@@ -1,37 +1,27 @@
 import random
 import time
 
-
 def main():
-
     ###################
     #   Create List   #
     ###################
 
     n = 100
-    s = []
-
-    for i in range(n):
-        s.append(random.randint(0, n))
-
+    s = [random.randint(0, n) for _ in range(n)]
+    
     s1 = s.copy()
     s2 = s.copy()
     s.sort()
-
-    # print("s1:", s1)  # merge sort
-    # print("s2:", s2)  # quick sort
-    # print()
 
     ##################
     #   Merge Sort   #
     ##################
 
     start = time.perf_counter()
-    merge_sort(s=s1, low=0, high=len(s2) - 1)
+    merge_sort(s=s1, low=0, high=len(s1) - 1)
     end = time.perf_counter()
     print("[Merge Sort Result]")
     print("Elapsed Time: {0:0.4f}ms".format((end - start) * 1_000))
-    print("s1:", s1)
     print("Correct:", s == s1)
     print()
 
@@ -44,7 +34,6 @@ def main():
     end = time.perf_counter()
     print("[Quick Sort Result]")
     print("Elapsed Time: {0:0.4f}ms".format((end - start) * 1_000))
-    print("s2:", s2)
     print("Correct:", s == s2)
     print()
 
@@ -62,16 +51,14 @@ def main():
     for trial in range(TRIAL):
         # Create list
         n = 5000
-        s = []
-        for i in range(n):
-            s.append(random.randint(0, n))
-
+        s = [random.randint(0, n) for _ in range(n)]
+        
         s1 = s.copy()
         s2 = s.copy()
 
         # Merge Sort
         start = time.perf_counter()
-        merge_sort(s=s1, low=0, high=len(s2) - 1)
+        merge_sort(s=s1, low=0, high=len(s1) - 1)
         end = time.perf_counter()
         total_elapsed_time_merge_sort += end - start
 
@@ -88,7 +75,6 @@ def main():
     print("Merge Sort - Elapsed Time: {:.5}s".format(total_elapsed_time_merge_sort))
     print("Quick Sort - Elapsed Time: {:.5}s".format(total_elapsed_time_quick_sort))
 
-
 def merge_sort(s, low, high):
     if low < high:
         mid = (low + high) // 2
@@ -96,15 +82,31 @@ def merge_sort(s, low, high):
         merge_sort(s, mid + 1, high)
         merge(s, low, mid, high)
 
-
 def merge(s, low, mid, high):
-    tmp = [0] * (high - low + 1)
-    i = low
-    j = mid + 1
-    t = 0
-
-    # 코딩을 추가하세요.
-
+    left = s[low:mid + 1]  # 왼쪽 부분 배열
+    right = s[mid + 1:high + 1]  # 오른쪽 부분 배열
+    i = j = 0  # 각 부분 배열의 인덱스
+    k = low  # 원래 배열의 인덱스
+    
+    # 두 배열을 비교하며 정렬
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            s[k] = left[i]
+            i += 1
+        else:
+            s[k] = right[j]
+            j += 1
+        k += 1
+    
+    # 남은 요소들 추가
+    while i < len(left):
+        s[k] = left[i]
+        i += 1
+        k += 1
+    while j < len(right):
+        s[k] = right[j]
+        j += 1
+        k += 1
 
 def quick_sort(s, low, high):
     if low < high:
@@ -112,15 +114,17 @@ def quick_sort(s, low, high):
         quick_sort(s, low, pivot - 1)
         quick_sort(s, pivot + 1, high)
 
-
 def partition(s, low, high):
-    x = s[high]
-    i = low - 1
-
-    # 코딩을 추가하세요.
-
-    return i
-
+    pivot = s[high]  # 피벗 요소 선택
+    i = low - 1  # 피벗보다 작은 요소들의 위치
+    
+    for j in range(low, high):
+        if s[j] <= pivot:  # 현재 요소가 피벗 이하라면
+            i += 1
+            s[i], s[j] = s[j], s[i]  # 자리 교환
+    
+    s[i + 1], s[high] = s[high], s[i + 1]  # 피벗을 올바른 위치로 이동
+    return i + 1  # 새로운 피벗의 인덱스 반환
 
 if __name__ == "__main__":
     main()
